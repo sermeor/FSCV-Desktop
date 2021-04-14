@@ -1,14 +1,10 @@
-#Imports for the application.
-import tkinter as tk
-import serial
-import numpy as np
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-from matplotlib.figure import Figure
+from libraries import *
 #import classes
-from serial_config import SERIAL_CONFIG
-from graph_config import GRAPH_CONFIG
-from plot_settings import PLOT_SETTINGS
+from fscv_data import FSCV_DATA #Classes to store the data and methods.
+from serial_config import SERIAL_CONFIG #Serial configuration popup window.
+from graph_config import GRAPH_CONFIG #Graph configuration popup window.
+from plot_settings import PLOT_SETTINGS #Plot settings.
+from serial_settings import SERIAL_SETTINGS #serial connection parameters.
 #Main window class.
 class MAIN_WINDOW:
     def __init__(self):
@@ -30,7 +26,12 @@ class MAIN_WINDOW:
         self.menubar.add_cascade(label="File", menu=self.file_menu)
 
         self.edit_menu = tk.Menu(self.menubar, tearoff=0)
+        # self.edit_menu.add_command(label='Acquisition settings', command=)
+        # CONTINUE
         self.menubar.add_cascade(label='Edit', menu=self.edit_menu)
+
+        self.help_menu = tk.Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label='Help', menu=self.help_menu)
         #Add menubar.
         self.master.config(menu = self.menubar)
         #Create resizable grid.
@@ -43,41 +44,19 @@ class MAIN_WINDOW:
         self.color_plot_frame = tk.Frame(self.main_frame, bg='white')
         self.color_plot_frame.grid(row=0, column=2, padx=5, pady=5)
 
+        self.color_plot_toolbar_frame = tk.Frame(self.main_frame, bg='white')
+        self.color_plot_toolbar_frame.grid(row=1, column=2, padx=5, pady=5)
+
         #Populating the serial frame.
         self.connect_button = self.get_button_object(self.serial_frame, self.connect_button_pushed, 2, 10, 'Connect', [4,0,1,2,0,0], '#3f51b5', 'white')
 
         #Initialisation of variables.
-        self.serial_port = 'COM5'
-        self.serial_bytes = 8
-        self.serial_baud_rate = 115200
-        #Graph color plots.
-        self.plot_configuration = PLOT_SETTINGS()
-        self.color_palette = self.plot_configuration.custom1
-        
-
+        self.serial = SERIAL_SETTINGS(self)
         ##TESTING ###################################################################################################################################
-        self.get_color_plot(self.color_plot_frame, 5, 5, 100, 'Time (s)', 'Samples', 15, [0,1,1,1,10,10], self.plot_configuration.custom1)
+        self.plot_configuration = PLOT_SETTINGS()
+        self.fscv_data = FSCV_DATA(self, 'nA', 's', 's', 'Current', 'Time', 'Time', -10, 10, 'Color plot', np.random.rand(3000,2000))
+        self.fscv_data.init_color_plot(self.color_plot_frame, 5, 5, 100, 15, [0,1,1,1,10,10])
 
-
-    def get_color_plot(self, macro, size_x, size_y, dpi, x_label, y_label, fontsize, position, color_palette):
-        fig = Figure(figsize=(size_x, size_y), dpi=dpi)
-        axes = fig.add_subplot(111)
-        axes.set_ylabel(y_label, fontsize=fontsize)
-        axes.set_xlabel(x_label, fontsize=fontsize)
-        axes.tick_params(axis='both', labelsize=15)
-        matrix = axes.imshow(np.random.rand(300,300), cmap=color_palette)
-        divider = make_axes_locatable(axes)
-        cax2 = divider.append_axes("right", size="5%", pad=0.05)
-        fig.colorbar(matrix, cax=cax2)
-        fig.tight_layout()
-        canvas = FigureCanvasTkAgg(fig, master=macro)
-        plot_widget = canvas.get_tk_widget()
-        plot_widget.grid(row=position[0], column=position[1], rowspan=position[2], columnspan=position[3], padx=position[4], pady=position[5])
-        return fig, axes, matrix, canvas, plot_widget
-
-    def get_3D_plot(self):
-
-        return False
 
         ##TESTING ###################################################################################################################################
     def get_input_object(self, macro, label_name, color, label_position, input_position, default_value):
@@ -100,17 +79,6 @@ class MAIN_WINDOW:
             self.disconnect_from_serial_port()
         else:
             self.connect_to_serial_port()
-
-    def connect_to_serial_port(self):
-        try:
-            self.serial_connection = serial.Serial(self.serial_port, self.serial_baud_rate, self.serial_bytes)
-            self.connect_button.configure(bg="#94FF98", text='Connected')
-        except:
-            tk.messagebox.showerror(title='Error', message='Connection to '+self.serial_port+' unsuccesful')
-
-    def disconnect_from_serial_port(self):
-        self.serial_connection.close()
-        self.connect_button.configure(bg='#3f51b5', text = 'Connect')
 
     def serial_config_button_pushed(self):
         self.serial_config = SERIAL_CONFIG(self)
