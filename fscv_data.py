@@ -19,17 +19,19 @@ class FSCV_DATA:
         self.canvas = None
         self.plot_widget = None
         self.toolbar = None
+        self.colorbar = None
 
     def init_color_plot(self, macro, size_x, size_y, dpi, fontsize, position):
         self.figure = Figure(figsize=(size_x, size_y), dpi=dpi)
         self.axes = self.figure.add_subplot(111)
         self.axes.set_ylabel(self.current.y_label+' ('+self.current.y_units+')', fontsize=fontsize)
         self.axes.set_xlabel(self.current.x_label+' ('+self.current.x_units+')', fontsize=fontsize)
-        self.axes.tick_params(axis='both', labelsize=15)
+        self.axes.tick_params(axis='both', labelsize=fontsize)
         self.image_matrix = self.axes.imshow(self.current.array, cmap=self.color_palette, vmin=self.color_lower_bound, vmax=self.color_upper_bound)
         divider = make_axes_locatable(self.axes)
         cax2 = divider.append_axes("right", size="5%", pad=0.05)
-        self.figure.colorbar(self.image_matrix, cax=cax2)
+        self.colorbar = self.figure.colorbar(self.image_matrix, cax=cax2)
+        self.colorbar.ax.tick_params(labelsize=fontsize)
         self.canvas = FigureCanvasTkAgg(self.figure, master=macro)
         self.toolbar = NavigationToolbar2Tk(self.canvas, self.parent_class.color_plot_toolbar_frame)
         self.plot_widget = self.canvas.get_tk_widget()
@@ -41,6 +43,7 @@ class FSCV_DATA:
         self.axes.autoscale_view()
         self.canvas.draw()
         self.canvas.flush_events()
+        
     def change_color_palette(self):
         self.image_matrix.set_cmap(self.color_palette)
         self.image_matrix.set_clim(vmin=self.color_lower_bound, vmax=self.color_upper_bound)
