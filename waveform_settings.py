@@ -21,7 +21,7 @@ class WAVEFORM_SETTINGS:
             self.voltage_array = np.append(self.voltage_array, np.linspace(self.dopamine[i-1][1], self.dopamine[i][1], samples))
 
         #Variables of XY figure in main window.
-        self.figure, self.axes, self.line, self.canvas, self.plot_widget = self.parent_class.gui_methods.init_XY_graph(self.parent_class.voltage_XY_frame, [5,5], 100, [0,1,1,1,10,10], self.time_array, self.voltage_array, 0.5, 'black', 'Voltage (V)', 'Time (s)', 8)
+        self.figure, self.axes, self.line, self.canvas, self.plot_widget = self.parent_class.gui_methods.init_XY_graph(self.parent_class.voltage_XY_frame, [5,5], 100, [0,1,1,1,10,10], self.time_array, self.voltage_array, 2, 'black', 'Voltage (V)', 'Time (s)', 8)
 
 
     def regraph_waveform(self):

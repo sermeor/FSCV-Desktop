@@ -9,7 +9,8 @@ from waveform_config import WAVEFORM_CONFIG #Waveform configuration popup window
 from plot_settings import PLOT_SETTINGS #Plot settings.
 from serial_settings import SERIAL_SETTINGS #serial connection parameters.
 from acquisition_settings import ACQUISITION_SETTINGS # Acquisition parameters.
-from waveform_settings import WAVEFORM_SETTINGS
+from waveform_settings import WAVEFORM_SETTINGS # Waveform parameters.
+from oscilloscope_window import OSCILLOSCOPE_WINDOW # Oscilloscope class for the window.
 
 #Main window class.
 class MAIN_WINDOW:
@@ -40,7 +41,6 @@ class MAIN_WINDOW:
         self.menubar.add_cascade(label='Tools', menu=self.tools_menu)
 
         self.edit_menu = tk.Menu(self.menubar, tearoff=0)
-        self.edit_menu.add_command(label='Acquisition Config.', command=self.acquisition_config_button_pushed)
         self.menubar.add_cascade(label='Edit', menu=self.edit_menu)
 
         self.help_menu = tk.Menu(self.menubar, tearoff=0)
@@ -139,8 +139,7 @@ class MAIN_WINDOW:
         return False
 
     def oscilloscope_button_pushed(self):
-
-        return False
+        self.oscilloscope_window = OSCILLOSCOPE_WINDOW(self)
 
     def type_of_acquisition_changed(self):
         if self.type_of_acquisition.get() == 'FSCV':

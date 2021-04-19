@@ -20,7 +20,7 @@ class GUI_METHODS:
         axes.set_ylabel(ylabel, fontsize=fontsize)
         axes.set_xlabel(xlabel, fontsize=fontsize)
         axes.tick_params(axis='both', labelsize=fontsize)
-        line = axes.plot(array_x, array_y, marker='.', color=color, linewidth=thickness)
+        line = axes.plot(array_x, array_y, color=color, linewidth=thickness)
         axes.grid()
         canvas = FigureCanvasTkAgg(figure, master=macro)
         plot_widget = canvas.get_tk_widget()

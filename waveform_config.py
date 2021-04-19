@@ -69,7 +69,7 @@ class WAVEFORM_CONFIG:
         #Import waveform panel.
         self.import_button = self.parent_class.gui_methods.get_button_object(self.import_waveform_frame, self.import_waveform_changed, 2, 10, 'Import', [0,0,2,1,0,0], '#3f51b5', 'white')
         #Waveform graph.
-        self.figure, self.axes, self.line, self.canvas, self.plot_widget = self.parent_class.gui_methods.init_XY_graph(self.main_frame, [5,5], 100, [0,1,1,1,10,10], [], [],  0.5, 'black', 'Voltage (V)', 'Time (s)', 8)
+        self.figure, self.axes, self.line, self.canvas, self.plot_widget = self.parent_class.gui_methods.init_XY_graph(self.main_frame, [5,5], 100, [0,1,1,1,10,10], [], [],  2, 'black', 'Voltage (V)', 'Time (s)', 8)
 
         #Apply and close buttons
         self.apply_button = self.parent_class.gui_methods.get_button_object(self.apply_frame, self.apply_changes_pushed, 2, 10, 'Apply', [0,0,1,1,0,0], '#3f51b5', 'white')
