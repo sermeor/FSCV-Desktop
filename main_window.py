@@ -70,11 +70,10 @@ class MAIN_WINDOW:
 
         #Initialisation of variables.
         self.serial = SERIAL_SETTINGS(self)
-        ##TESTING ###################################################################################################################################
+
         self.plot_configuration = PLOT_SETTINGS()
         self.fscv_data = FSCV_DATA(self, 'nA', 's', 's', 'Current', 'Time', 'Time', -10, 10, 'Color plot', np.random.rand(3000,2000))
         self.fscv_data.init_color_plot(self.color_plot_frame, 5, 5, 100, 8, [0,1,1,1,10,10])
-
         self.acquisition = ACQUISITION_SETTINGS(self)
 
         #Radio buttons FSCV-FSCAV
@@ -88,11 +87,7 @@ class MAIN_WINDOW:
         #Waveform settings
         self.waveform_settings = WAVEFORM_SETTINGS(self)
 
-        #Waveform graph.
 
-
-
-        ##TESTING ###################################################################################################################################
 
 
 
@@ -127,16 +122,20 @@ class MAIN_WINDOW:
         return False
 
     def apply_waveform_button_pushed(self):
+        # if self.connect_button['text'] == 'Connected':
+        #     self.serial.disconnect_from_serial_port()
+        # else:
+        #     self.serial.connect_to_serial_port()
 
-        return False
+        self.parent_class.apply_waveform_button.configure(bg="#94FF98", text='Applying waveform')
+
 
     def acquire_data_button_pushed(self):
 
         return False
 
     def acquisition_config_button_pushed(self):
-
-        return False
+        self.acquisition_window = ACQUISITION_CONFIG(self)
 
     def oscilloscope_button_pushed(self):
         self.oscilloscope_window = OSCILLOSCOPE_WINDOW(self)

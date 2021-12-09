@@ -47,10 +47,10 @@ class WAVEFORM_CONFIG:
         self.voltage_input = self.parent_class.gui_methods.get_input_object(self.point_based_waveform_frame, 'Voltage point (V)', 'white', [1,0,1,1,0,0], [1,1,1,1,0,0], 0)
         self.add_coordenates_button = self.parent_class.gui_methods.get_button_object(self.point_based_waveform_frame, self.add_point_to_table, 2, 5, 'Add', [0,2,2,1,0,0], '#3f51b5', 'white')
         self.remove_coordenates_button = self.parent_class.gui_methods.get_button_object(self.point_based_waveform_frame, self.remove_point_of_table, 2, 5, 'Del.', [0,3,2,1,0,0], '#3f51b5', 'white')
-        self.list_of_coordinates = ttk.Treeview(self.point_based_waveform_frame, columns=('V', 't'), height=3)
+        self.list_of_coordinates = ttk.Treeview(self.point_based_waveform_frame, columns=('t', 'V'), height=3)
         self.list_of_coordinates.column("#0", width=0)
-        self.list_of_coordinates.column("V", width=100)
         self.list_of_coordinates.column("t", width=100)
+        self.list_of_coordinates.column("V", width=100)
         self.list_of_coordinates.heading('t', text='Time (s)')
         self.list_of_coordinates.heading('V', text='Voltage (V)')
         self.list_of_coordinates.grid(row=2, column=0, columnspan=2)
@@ -74,7 +74,6 @@ class WAVEFORM_CONFIG:
         #Apply and close buttons
         self.apply_button = self.parent_class.gui_methods.get_button_object(self.apply_frame, self.apply_changes_pushed, 2, 10, 'Apply', [0,0,1,1,0,0], '#3f51b5', 'white')
         self.import_button = self.parent_class.gui_methods.get_button_object(self.apply_frame, self.close_button_pushed, 2, 10, 'Close', [0,1,1,1,0,0], '#3f51b5', 'white')
-
         #Initialise dopamine waveform.
         self.saved_waveform_changed()
 
@@ -121,12 +120,14 @@ class WAVEFORM_CONFIG:
         self.canvas.flush_events()
 
     def add_point_to_table(self):
-        self.list_of_coordinates.insert("", self.point_counter, self.point_counter, text=str(self.point_counter), values=(self.time_input.get(),self.voltage_input.get()))
-        self.point_counter = self.point_counter+1
+        self.point_counter = len(self.list_of_coordinates.get_children())
+        self.list_of_coordinates.insert("", self.point_counter, self.point_counter, text=str(self.point_counter), values=(self.time_input.get(), self.voltage_input.get()))
+        self.point_counter = self.point_counter + 1
 
     def remove_point_of_table(self):
-        self.point_counter = self.point_counter-1
-        self.list_of_coordinates.delete(self.point_counter)
+        self.point_counter = len(self.list_of_coordinates.get_children())
+        self.list_of_coordinates.delete(self.point_counter-1)
+        self.point_counter = self.point_counter - 1
 
 
     def saved_waveform_changed(self):
@@ -136,11 +137,11 @@ class WAVEFORM_CONFIG:
             self.coordinates_array = self.parent_class.waveform_settings.serotonin
         elif self.saved_waveform_variable.get() == 'HA/5-HT':
             self.coordinates_array = self.parent_class.waveform_settings.histamine_serotonin
-        self.point_counter = len(self.coordinates_array)
         self.voltage_array = []
         self.time_array = []
         self.get_array_from_coordinates()
         self.regraph_waveform()
+
 
     def import_waveform_changed(self):
         file = tk.filedialog.askopenfile(filetypes = [('Text Document', '*.txt')])
@@ -159,10 +160,12 @@ class WAVEFORM_CONFIG:
         self.parent_class.waveform_settings.voltage_array = self.voltage_array
         self.parent_class.waveform_settings.time_array = self.time_array
         self.parent_class.waveform_settings.regraph_waveform()
+
     def close_button_pushed(self):
         self.master.destroy()
 
     def get_array_from_coordinates(self):
+        self.point_counter = len(self.coordinates_array)
         for i in range(1, self.point_counter):
             samples = int(np.abs(self.parent_class.acquisition.frequency*(self.coordinates_array[i][0]-self.coordinates_array[i-1][0])))
             self.time_array = np.append(self.time_array, np.linspace(self.coordinates_array[i-1][0], self.coordinates_array[i][0], samples))
